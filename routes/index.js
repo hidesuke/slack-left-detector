@@ -11,8 +11,9 @@ const challenge = (req, res) => {
 };
 
 const reinvite = async (req, res) => {
-  const user = req.body.user;
-  const channel = req.body.channel;
+  const token = req.body.token;
+  const user = req.body.event.user;
+  const channel = req.body.event.channel;
   const URL = 'https://slack.com/api/channels.invite';
   try {
     const ret = await axios.post(URL, {
@@ -20,6 +21,7 @@ const reinvite = async (req, res) => {
         Authorization: `Bearer ${process.env.accessToken}`,
       },
       params: {
+        token,
         user,
         channel,
       },
@@ -34,9 +36,9 @@ const reinvite = async (req, res) => {
 
 router.post('/slack-event', (req, res, next) => {
   console.log(req.body);
-  const type = req.body.type;
-  if (type === 'url_verification') return challenge(req, res);
-  if (type !== 'member_left_channel') return res.status(200);
+  if (req.body.type === 'url_verification') return challenge(req, res);
+  if (!req.body.event) return res.status(200);
+  if (req.body.event.type !== 'member_left_channel') return res.status(200);
   return reinvite(req, res);
 });
 
