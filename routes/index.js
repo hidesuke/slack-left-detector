@@ -16,9 +16,13 @@ const reinvite = async (req, res) => {
   const URL = 'https://slack.com/api/channels.invite';
   try {
     const ret = await axios.post(URL, {
-      token: process.env.SLACK_TOKEN,
-      user,
-      channel,
+      headers: {
+        Authorization: `Bearer ${process.env.accessToken}`,
+      },
+      params: {
+        user,
+        channel,
+      },
     });
     console.log(ret);
     return res.status(200);
