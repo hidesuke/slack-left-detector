@@ -18,7 +18,7 @@ const reinvite = async (req, res) => {
   try {
     const ret = await axios.post(URL, {
       headers: {
-        Authorization: `Bearer ${process.env.accessToken}`,
+        Authorization: `Bearer ${process.env.botAccessToken}`,
       },
       params: {
         token,
