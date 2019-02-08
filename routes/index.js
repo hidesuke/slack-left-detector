@@ -29,6 +29,8 @@ const reinvite = async (req, res) => {
 };
 
 router.post('/slack-event', (req, res, next) => {
+  console.log(req);
+  console.log(req.body);
   const type = req.body.event_type;
   if (type === 'url_verification') return challenge(req, res);
   if (type !== 'member_left_channel') return res.status(200);
