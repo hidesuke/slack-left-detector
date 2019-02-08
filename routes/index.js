@@ -1,0 +1,38 @@
+const express = require('express');
+const router = express.Router();
+const axios = require('axios');
+
+const challenge = (req, res) => {
+  const challenge = req.body.challenge;
+  const token = req.body.token;
+  return res.status(200).json({
+    challenge,
+  });
+};
+
+const reinvite = async (req, res) => {
+  const user = req.body.user;
+  const channel = req.body.channel;
+  const URL = 'https://slack.com/api/channels.invite';
+  try {
+    const ret = await axios.post(URL, {
+      token: process.env.SLACK_TOKEN,
+      user,
+      channel,
+    });
+    console.log(ret);
+    return res.status(200);
+  } catch (e) {
+    console.log(e);
+    return res.status(500);
+  }
+};
+
+router.post('/slack-event', (req, res, next) => {
+  const type = req.body.event_type;
+  if (type === 'url_verification') return challenge(req.body, res);
+  if (type !== 'member_left_channel') return res.status(200);
+  return reinvite(req, res);
+});
+
+module.exports = router;
