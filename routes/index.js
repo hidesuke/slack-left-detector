@@ -22,7 +22,7 @@ const reinvite = async (req, res) => {
       headers: {
         Authorization: `Bearer ${process.env.botAccessToken}`,
       },
-      params: {
+      data: {
         user,
         channel,
       },
